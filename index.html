@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Sharing Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        input, textarea {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .recipe-list {
+            list-style: none;
+            padding: 0;
+        }
+        .recipe-item {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 4px;
+            position: relative;
+        }
+        .recipe-item button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+        }
+        .recipe-item button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Recipe Sharing Platform</h1>
+        <form id="recipe-form">
+            <input type="text" id="title" placeholder="Recipe Title" required>
+            <textarea id="ingredients" placeholder="Ingredients" required></textarea>
+            <textarea id="instructions" placeholder="Instructions" required></textarea>
+            <button type="submit">Add Recipe</button>
+        </form>
+        <ul class="recipe-list" id="recipe-list"></ul>
+    </div>
+
+    <script>
+        const recipeForm = document.getElementById('recipe-form');
+        const recipeList = document.getElementById('recipe-list');
+
+        let recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+
+        const renderRecipes = () => {
+            recipeList.innerHTML = '';
+            recipes.forEach((recipe, index) => {
+                const li = document.createElement('li');
+                li.className = 'recipe-item';
+                li.innerHTML = `
+                    <h3>${recipe.title}</h3>
+                    <p><strong>Ingredients:</strong> ${recipe.ingredients}</p>
+                    <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+                    <button onclick="deleteRecipe(${index})">Delete</button>
+                `;
+                recipeList.appendChild(li);
+            });
+        };
+
+        const addRecipe = (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const ingredients = document.getElementById('ingredients').value;
+            const instructions = document.getElementById('instructions').value;
+
+            const newRecipe = { title, ingredients, instructions };
+            recipes.push(newRecipe);
+            localStorage.setItem('recipes', JSON.stringify(recipes));
+            renderRecipes();
+            recipeForm.reset();
+        };
+
+        const deleteRecipe = (index) => {
+            recipes.splice(index, 1);
+            localStorage.setItem('recipes', JSON.stringify(recipes));
+            renderRecipes();
+        };
+
+        recipeForm.addEventListener('submit', addRecipe);
+        renderRecipes();
+    </script>
+
+</body
